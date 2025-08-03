@@ -157,7 +157,7 @@ Transform:
   m_GameObject: {fileID: 259106890}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.93, y: -0.5899997, z: 0}
+  m_LocalPosition: {x: 7.93, y: -0.47, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -430,10 +430,9 @@ GameObject:
   - component: {fileID: 955468968}
   - component: {fileID: 955468967}
   - component: {fileID: 955468970}
-  - component: {fileID: 955468969}
-  - component: {fileID: 955468971}
   - component: {fileID: 955468972}
-  m_Layer: 0
+  - component: {fileID: 955468971}
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -504,24 +503,12 @@ Transform:
   m_GameObject: {fileID: 955468966}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.4, y: 5.9, z: -0.09179951}
+  m_LocalPosition: {x: 4.4, y: 5.807, z: -0.09179951}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!156049354 &955468969
-Grid:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955468966}
-  m_Enabled: 1
-  m_CellSize: {x: 1, y: 1, z: 1}
-  m_CellGap: {x: 0, y: 0, z: 0}
-  m_CellLayout: 0
-  m_CellSwizzle: 0
 --- !u!50 &955468970
 Rigidbody2D:
   serializedVersion: 5
@@ -1040,7 +1027,7 @@ GameObject:
   - component: {fileID: 1974155764}
   - component: {fileID: 1974155763}
   - component: {fileID: 1974155762}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Background Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4447,7 +4434,7 @@ GameObject:
   - component: {fileID: 1983038114}
   - component: {fileID: 1983038116}
   - component: {fileID: 1983038115}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Object Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
