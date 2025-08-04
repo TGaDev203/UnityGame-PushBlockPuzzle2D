@@ -1,49 +1,51 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveTime = 0.2f;
-    [SerializeField] private float cellSize = 1f;
-    [SerializeField] private JoystickController joystickController;
-    private Vector2Int currentGridPos;
-    private bool isMoving = false;
-    private Vector3 targetPosition;
+    [SerializeField] private Tilemap blockedTilemap;
+    [SerializeField] private Tilemap walkableTilemap;
+    private Rigidbody2D playerRb;
 
-    private void Start()
+    private void Awake()
     {
-        targetPosition = transform.position;
-        currentGridPos = Vector2Int.RoundToInt(transform.position / cellSize);
+        playerRb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    public void Move(Vector2Int direction)
     {
-        if (!isMoving && joystickController.InputDirection != Vector2.zero)
-        {
-            Vector2Int dir = Vector2Int.RoundToInt(joystickController.InputDirection);
-            Vector2Int newGridPos = currentGridPos + dir;
+        Vector3Int currentCell = walkableTilemap.WorldToCell(transform.position);
+        Vector3Int targetCell = currentCell + new Vector3Int(direction.x, direction.y, 0);
 
-            targetPosition = new Vector3(newGridPos.x, newGridPos.y, 0) * cellSize;
-            StartCoroutine(MoveToPostion(targetPosition));
-            currentGridPos = newGridPos;
+        if (IsWalkable(targetCell))
+        {
+            Vector3 targetWorldPos = walkableTilemap.GetCellCenterWorld(targetCell);
+            playerRb.MovePosition(targetWorldPos);
         }
     }
 
-    private IEnumerator MoveToPostion(Vector3 target)
+    private bool IsWalkable(Vector3Int cellPos)
     {
-        isMoving = true;
-        Vector3 start = transform.position;
-        float elapsed = 0f;
+        return walkableTilemap.HasTile(cellPos) && !blockedTilemap.HasTile(cellPos);
+    }
 
-        while (elapsed < moveTime)
-        {
-            transform.position = Vector3.Lerp(start, target, elapsed / moveTime);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+    public void MoveUp()
+    {
+        Move(Vector2Int.up);
+    }
 
-        transform.position = target;
-        isMoving = false;
+    public void MoveDown()
+    {
+        Move(Vector2Int.down);
+    }
+
+    public void MoveLeft()
+    {
+        Move(Vector2Int.left);
+    }
+
+    public void MoveRight()
+    {
+        Move(Vector2Int.right);
     }
 }
