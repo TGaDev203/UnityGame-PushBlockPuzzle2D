@@ -4,59 +4,64 @@ using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Tilemap blockedTilemap;
-    [SerializeField] private Tilemap boxTilemap;
-    private Rigidbody2D playerRb;
-    private WalkableTileChecker tileChecker;
-    private List<GameObject> allBoxes;
+    [SerializeField] private GridManager gridManager;
+    [SerializeField] private Tilemap desPointTilemap;
+    private List<Box> allBoxes;
+    private List<Transform> allPoints;
 
     public void MoveUp() => Move(Vector2Int.up);
     public void MoveDown() => Move(Vector2Int.down);
     public void MoveLeft() => Move(Vector2Int.left);
     public void MoveRight() => Move(Vector2Int.right);
 
-    private void Awake()
-    {
-        playerRb = GetComponent<Rigidbody2D>();
-        tileChecker = GetComponent<WalkableTileChecker>();
-    }
-
     private void Start()
     {
-        allBoxes = new List<GameObject>();
-        foreach (var box in FindObjectsByType<PushableBox>(FindObjectsSortMode.None))
+        allBoxes = new List<Box>(FindObjectsByType<Box>(FindObjectsSortMode.None));
+        allPoints = new List<Transform>();
+        GameObject[] pointObjs = GameObject.FindGameObjectsWithTag("Point");
+
+        foreach (var p in pointObjs)
         {
-            allBoxes.Add(box.gameObject);
+            allPoints.Add(p.transform);
         }
     }
-
 
     private void Move(Vector2Int dir)
     {
-        Vector3Int targetCell = tileChecker.GetCellInDirection(transform.position, dir);
+        Vector3Int currentCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
+        Vector3Int targetCell = currentCell + new Vector3Int(dir.x, dir.y, 0);
 
-        if (tileChecker.IsWalkable(targetCell))
-        {
-            playerRb.MovePosition(tileChecker.GetWorldPosition(targetCell));
-        }
+        if (gridManager.IsBlocked(targetCell)) return;
 
-        else
+        if (BoxAtCell(targetCell))
         {
-            foreach (var box in FindObjectsByType<PushableBox>(FindObjectsSortMode.None))
+            foreach (var box in allBoxes)
             {
-                Vector3Int boxCell = boxTilemap.WorldToCell(box.transform.position);
-                if (boxCell == targetCell)
-                {
-                    bool pushed = box.TryPush(dir, blockedTilemap, allBoxes);
+                Vector3Int boxCell = gridManager.GetCellInDirection(box.transform.position, Vector2Int.zero);
 
-                    if (pushed)
-                    {
-                        playerRb.MovePosition(tileChecker.GetWorldPosition(targetCell));
-                    }
+                if (boxCell != targetCell) continue;
 
-                    break;
-                }
+                Vector3Int afterBoxCell = targetCell + new Vector3Int(dir.x, dir.y, 0);
+
+                if (gridManager.IsBlocked(afterBoxCell) || BoxAtCell(afterBoxCell)) return;
+
+                if (box.TryPush(dir, gridManager, allBoxes, allPoints)) transform.position = gridManager.GetWorldCenter(targetCell);
+
+                return;
             }
         }
+
+        else transform.position = gridManager.GetWorldCenter(targetCell);
+    }
+
+    private bool BoxAtCell(Vector3Int cell)
+    {
+        foreach (var box in allBoxes)
+        {
+            Vector3Int boxCell = gridManager.GetCellInDirection(box.transform.position, Vector2Int.zero);
+
+            if (boxCell == cell) return true;
+        }
+        return false;
     }
 }

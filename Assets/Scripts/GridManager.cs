@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class WalkableTileChecker : MonoBehaviour
+public class GridManager : MonoBehaviour
 {
-    [SerializeField] private Tilemap blockedTilemap;
     [SerializeField] private Tilemap walkableTilemap;
 
     public Vector3Int GetCellInDirection(Vector3 worldPos, Vector2Int direction)
@@ -13,12 +12,17 @@ public class WalkableTileChecker : MonoBehaviour
         return targetCell;
     }
 
-    public bool IsWalkable(Vector3Int cellPos)
+    public bool IsBlocked(Vector3Int cell)
     {
-        return walkableTilemap.HasTile(cellPos) && !blockedTilemap.HasTile(cellPos);
+        return !walkableTilemap.HasTile(cell);
     }
 
-    public Vector3 GetWorldPosition(Vector3Int cell)
+    public bool IsWalkable(Vector3Int cell)
+    {
+        return !IsBlocked(cell);
+    }
+
+    public Vector3 GetWorldCenter(Vector3Int cell)
     {
         return walkableTilemap.GetCellCenterWorld(cell);
     }
