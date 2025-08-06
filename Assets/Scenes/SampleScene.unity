@@ -1310,6 +1310,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 901401733}
     m_Modifications:
+    - target: {fileID: 573564400650910406, guid: f7bafe08798ad79489571ce69e23b5b4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 267784243, guid: e0b27f522c0e0b14e9fffbf9858176ce, type: 3}
     - target: {fileID: 2291194643191159998, guid: f7bafe08798ad79489571ce69e23b5b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.012
@@ -3217,6 +3221,8 @@ GameObject:
   - component: {fileID: 1450831723865645960}
   - component: {fileID: 7272675548488582909}
   - component: {fileID: 5713854478873793941}
+  - component: {fileID: 7272675548488582910}
+  - component: {fileID: 7272675548488582911}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -5526,6 +5532,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 5713854478873793941}
   desPointTilemap: {fileID: 2153359948258015546}
+  moveSpeed: 5
+--- !u!95 &7272675548488582910
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3275689105187609851}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a687e3ef420b357419553a2612ea40e7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7272675548488582911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3275689105187609851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653f34cb0f851c743ae687eee2d0dd07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7798308015623446873
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -6,13 +7,22 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private GridManager gridManager;
     [SerializeField] private Tilemap desPointTilemap;
+    [SerializeField] private float moveSpeed = 5f;
+    private bool isMoving = false;
     private List<Box> allBoxes;
     private List<Transform> allPoints;
+    private Vector2Int lastDirection;
+    private PlayerAnimation playerAnim;
 
     public void MoveUp() => Move(Vector2Int.up);
     public void MoveDown() => Move(Vector2Int.down);
     public void MoveLeft() => Move(Vector2Int.left);
     public void MoveRight() => Move(Vector2Int.right);
+
+    private void Awake()
+    {
+        playerAnim = GetComponent<PlayerAnimation>();
+    }
 
     private void Start()
     {
@@ -28,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move(Vector2Int dir)
     {
+        if (isMoving) return;
         Vector3Int currentCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
         Vector3Int targetCell = currentCell + new Vector3Int(dir.x, dir.y, 0);
 
@@ -45,13 +56,37 @@ public class PlayerMovement : MonoBehaviour
 
                 if (gridManager.IsBlocked(afterBoxCell) || BoxAtCell(afterBoxCell)) return;
 
-                if (box.TryPush(dir, gridManager, allBoxes, allPoints)) transform.position = gridManager.GetWorldCenter(targetCell);
+                if (box.TryPush(dir, gridManager, allBoxes, allPoints)) StartCoroutine(MoveToCell(targetCell, dir));
 
                 return;
             }
         }
 
-        else transform.position = gridManager.GetWorldCenter(targetCell);
+        else StartCoroutine(MoveToCell(targetCell, dir));
+    }
+
+    private IEnumerator MoveToCell(Vector3Int targetCell, Vector2Int dir)
+    {
+        isMoving = true;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = gridManager.GetWorldCenter(targetCell);
+
+        playerAnim.SetIsWalking(true);
+        lastDirection = dir;
+        playerAnim.SetDirection(lastDirection);
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * moveSpeed;
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+            yield return null;
+        }
+
+        transform.position = endPos;
+        playerAnim.SetIsWalking(false);
+        playerAnim.SetDirection(lastDirection);
+        isMoving = false;
     }
 
     private bool BoxAtCell(Vector3Int cell)
