@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public class Box : MonoBehaviour
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite onPointSprite;
     private SpriteRenderer spriteRenderer;
+    // private Vector2Int lastDirection;
+    [SerializeField] private float moveSpeed = 5f;
 
     private void Awake()
     {
@@ -28,7 +31,7 @@ public class Box : MonoBehaviour
             if (boxCell == targetCell) return false;
         }
 
-        transform.position = gridManager.GetWorldCenter(targetCell);
+        StartCoroutine(MoveToCell(targetCell, dir, gridManager));
 
         bool isOnPoint = false;
 
@@ -40,10 +43,29 @@ public class Box : MonoBehaviour
             {
                 isOnPoint = true;
             }
-
         }
         spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
 
         return true;
+    }
+
+    private IEnumerator MoveToCell(Vector3Int targetCell, Vector2Int dir, GridManager gridManager)
+    {
+        // isMoving = true;
+        Vector3 startPos = transform.position;
+        Vector3 endPos = gridManager.GetWorldCenter(targetCell);
+
+        // lastDirection = dir;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * moveSpeed;
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+            yield return null;
+        }
+
+        transform.position = endPos;
+        // isMoving = false;
     }
 }
