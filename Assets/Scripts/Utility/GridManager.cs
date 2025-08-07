@@ -5,6 +5,23 @@ public class GridManager : MonoBehaviour
 {
     [SerializeField] private Tilemap walkableTilemap;
 
+    private void Start()
+    {
+        GameObject level = GameObject.FindGameObjectWithTag("Level");
+
+        if (level != null)
+        {
+            TilemapMarker[] markers = level.GetComponentsInChildren<TilemapMarker>();
+            foreach (var marker in markers)
+            {
+                if (marker.type == TilemapMarker.TilemapType.Walkable)
+                {
+                    walkableTilemap = marker.GetComponent<Tilemap>();
+                }
+            }
+        }
+    }
+
     public Vector3Int GetCellInDirection(Vector3 worldPos, Vector2Int direction)
     {
         Vector3Int currentCell = walkableTilemap.WorldToCell(worldPos);
