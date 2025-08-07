@@ -6,8 +6,9 @@ public class Box : MonoBehaviour
 {
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite onPointSprite;
+    [SerializeField] private float moveSpeed;
     private SpriteRenderer spriteRenderer;
-    [SerializeField] private float moveSpeed = 5f;
+    private bool isOnPoint = false;
 
     private void Awake()
     {
@@ -32,7 +33,7 @@ public class Box : MonoBehaviour
 
         StartCoroutine(MoveToCell(targetCell, dir, gridManager));
 
-        bool isOnPoint = false;
+        // bool isOnPoint = false;
 
         foreach (var point in allPoints)
         {
@@ -64,5 +65,24 @@ public class Box : MonoBehaviour
 
         transform.position = endPos;
         // isMoving = false;
+    }
+
+    public void UpdateSprite(List<Transform> allPoints, GridManager gridManager)
+    {
+        Debug.Log("Change");
+        Vector3Int myCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
+
+        foreach (var point in allPoints)
+        {
+            Vector3Int pointCell = gridManager.GetCellInDirection(point.position, Vector2Int.zero);
+
+            if (pointCell == myCell)
+            {
+                isOnPoint = true;
+                break;
+            }
+        }
+
+        spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
     }
 }
