@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private GridManager gridManager;
-    [SerializeField] private Tilemap desPointTilemap;
     [SerializeField] private float moveSpeed = 5f;
     private bool isMoving = false;
     private List<Box> allBoxes;

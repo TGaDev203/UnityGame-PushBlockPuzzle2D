@@ -10,6 +10,25 @@ public class GameObjSpawner : MonoBehaviour
 
     private void Start()
     {
+        GameObject level = GameObject.FindGameObjectWithTag("Level");
+
+        if (level != null)
+        {
+            TilemapMarker[] markers = level.GetComponentsInChildren<TilemapMarker>();
+            foreach (var marker in markers)
+            {
+                if (marker.type == TilemapMarker.TilemapType.Box)
+                {
+                    boxTileMap = marker.GetComponent<Tilemap>();
+                }
+
+                else if (marker.type == TilemapMarker.TilemapType.Point)
+                {
+                    pointTilemap = marker.GetComponent<Tilemap>();
+                }
+            }
+        }
+
         // Spawn Box
         foreach (Vector3Int pos in boxTileMap.cellBounds.allPositionsWithin)
         {

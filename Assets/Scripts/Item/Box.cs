@@ -7,7 +7,6 @@ public class Box : MonoBehaviour
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite onPointSprite;
     private SpriteRenderer spriteRenderer;
-    // private Vector2Int lastDirection;
     [SerializeField] private float moveSpeed = 5f;
 
     private void Awake()
@@ -54,8 +53,6 @@ public class Box : MonoBehaviour
         // isMoving = true;
         Vector3 startPos = transform.position;
         Vector3 endPos = gridManager.GetWorldCenter(targetCell);
-
-        // lastDirection = dir;
 
         float t = 0f;
         while (t < 1f)
