@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         allBoxes = new List<Box>(FindObjectsByType<Box>(FindObjectsSortMode.None));
+        
         allPoints = new List<Transform>();
         GameObject[] pointObjs = GameObject.FindGameObjectsWithTag("Point");
 
