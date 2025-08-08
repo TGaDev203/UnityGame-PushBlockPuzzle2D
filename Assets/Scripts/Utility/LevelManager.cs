@@ -16,7 +16,12 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         DebugManager.instance.enableRuntimeUI = false;
-        StartCoroutine(LoadLevelWithDelay(2));
+        StartCoroutine(LoadLevelWithDelay(1));
+    }
+
+    private void Update()
+    {
+        CheckLevelComplete();
     }
 
     private IEnumerator LoadLevelWithDelay(int index)
@@ -58,5 +63,10 @@ public class LevelManager : MonoBehaviour
         {
             box.UpdateSprite(allPoints, gridManager);
         }
+    }
+
+    private void CheckLevelComplete()
+    {
+        
     }
 }

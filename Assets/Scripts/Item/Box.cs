@@ -85,4 +85,9 @@ public class Box : MonoBehaviour
 
         spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
     }
+
+    public bool IsOnPoint()
+    {
+        return isOnPoint;
+    }
 }
