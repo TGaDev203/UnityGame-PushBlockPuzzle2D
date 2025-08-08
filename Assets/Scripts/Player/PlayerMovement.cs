@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private List<Transform> allPoints;
     private Vector2Int lastDirection;
     private PlayerAnimation playerAnim;
+    private bool canMove = false;
 
     public void MoveUp() => Move(Vector2Int.up);
     public void MoveDown() => Move(Vector2Int.down);
@@ -25,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         allBoxes = new List<Box>(FindObjectsByType<Box>(FindObjectsSortMode.None));
-        
+
         allPoints = new List<Transform>();
         GameObject[] pointObjs = GameObject.FindGameObjectsWithTag("Point");
 
@@ -37,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move(Vector2Int dir)
     {
-        if (isMoving) return;
+        if (isMoving || !canMove) return;
         Vector3Int currentCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
         Vector3Int targetCell = currentCell + new Vector3Int(dir.x, dir.y, 0);
 
@@ -66,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator MoveToCell(Vector3Int targetCell, Vector2Int dir)
     {
+        canMove = true;
         isMoving = true;
         Vector3 startPos = transform.position;
         Vector3 endPos = gridManager.GetWorldCenter(targetCell);
@@ -98,4 +100,13 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+
+    public void SetBoxesAndPoints(List<Box> boxes, List<Transform> points)
+    {
+        allBoxes = boxes;
+        allPoints = points;
+    }
+
+    public void EnableMovement() => canMove = true;
+    public void DisableMovement() => canMove = false;
 }
