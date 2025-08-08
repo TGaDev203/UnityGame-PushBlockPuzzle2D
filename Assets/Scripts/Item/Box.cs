@@ -7,8 +7,8 @@ public class Box : MonoBehaviour
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite onPointSprite;
     [SerializeField] private float moveSpeed;
-    private SpriteRenderer spriteRenderer;
     private bool isOnPoint = false;
+    private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
@@ -32,19 +32,7 @@ public class Box : MonoBehaviour
         }
 
         StartCoroutine(MoveToCell(targetCell, dir, gridManager));
-
-        // bool isOnPoint = false;
-
-        foreach (var point in allPoints)
-        {
-            Vector3Int pointCell = gridManager.GetCellInDirection(point.position, Vector2Int.zero);
-
-            if (pointCell == targetCell)
-            {
-                isOnPoint = true;
-            }
-        }
-        spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
+        SetSpriteBasedOnPoint(allPoints, gridManager, targetCell);
 
         return true;
     }
@@ -67,16 +55,22 @@ public class Box : MonoBehaviour
         // isMoving = false;
     }
 
-    public void UpdateSprite(List<Transform> allPoints, GridManager gridManager)
+    public void RefreshSpriteOnLoad(List<Transform> allPoints, GridManager gridManager)
     {
-        Debug.Log("Change");
         Vector3Int myCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
+
+        SetSpriteBasedOnPoint(allPoints, gridManager, myCell);
+    }
+
+    private void SetSpriteBasedOnPoint(List<Transform> allPoints, GridManager gridManager, Vector3Int cellToCheck)
+    {
+        isOnPoint = false;
 
         foreach (var point in allPoints)
         {
             Vector3Int pointCell = gridManager.GetCellInDirection(point.position, Vector2Int.zero);
 
-            if (pointCell == myCell)
+            if (pointCell == cellToCheck)
             {
                 isOnPoint = true;
                 break;
