@@ -145,8 +145,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void UndoMove()
     {
-        if (history.Count == 0) return;
-
         GameState prevState = history.Pop();
         transform.position = prevState.playerPosition;
         lastDirection = prevState.playerDirection;
