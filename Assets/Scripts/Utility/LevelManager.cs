@@ -1,38 +1,54 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Tilemaps;
+using System.Collections;
+using UnityEngine;
+using TMPro;
+using System.Linq;
 
 public class LevelManager : MonoBehaviour
 {
+    [Header("Prefabs")]
+    [SerializeField] private GameObject[] levelPrefabs;
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private GameObject gameObjSpawner;
-    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private GameObject player;
-    [SerializeField] private GameObject[] levelPrefabs;
+    [SerializeField] private GameObject undoButton;
+    [SerializeField] private GameObject moveButton;
+
+    [Header("References")]
+    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private GridManager gridManager;
-    [SerializeField] private TextMeshProUGUI levelDisplayText;
+    [SerializeField] private TextMeshProUGUI targetText;
+    [SerializeField] private TextMeshProUGUI stepText;
+    [SerializeField] private TextMeshProUGUI levelText;
+
+    [Header("Tilemaps")]
+    private Tilemap boxTileMap;
+    private Tilemap pointTilemap;
+    private Tilemap walkableTilemap;
+
+    [Header("Level State")]
     private GameObject currentLevel;
     private List<Transform> allPoints;
     private List<Box> allBoxes;
     private int currentLevelIndex;
     private bool isLevelCompleted = false;
-    private Tilemap boxTileMap;
-    private Tilemap pointTilemap;
-    private Tilemap walkableTilemap;
+    private int totalBox = 0;
 
     private void Start()
     {
-        InitWalkableTilemap();
+        InitTilemap();
 
         DebugManager.instance.enableRuntimeUI = false;
         currentLevelIndex = 1;
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
 
-        levelDisplayText.gameObject.SetActive(true);
+        moveButton.gameObject.SetActive(true);
+        targetText.gameObject.SetActive(true);
+        stepText.gameObject.SetActive(true);
+        levelText.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -42,45 +58,96 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator LoadLevelWithDelay(int index)
     {
-        if (currentLevel != null)
-        {
-            player.transform.position = Vector3.zero;
-            playerMovement.StopAllCoroutines();
-            Destroy(currentLevel);
-        }
+        player.SetActive(false);
+        UnloadCurrentLevel();
 
         currentLevel = Instantiate(levelPrefabs[index], Vector3.zero, Quaternion.identity, transform);
 
         yield return null;
 
-        InitWalkableTilemap();
-
+        InitTilemap();
         SpawnBoxesAndPointsFromTilemap();
 
         yield return null;
 
-        Transform spawnPoint = currentLevel.transform.Find("SpawnPoint");
+        SetPlayerToSpawnPoint();
+
+        SetupPlayerAndLevel();
+        player.SetActive(true);
+    }
+
+    private void UnloadCurrentLevel()
+    {
+        if (currentLevel == null) return;
+
+        playerMovement.ClearHistoryState();
+        playerMovement.stepCounter = 0;
+        player.transform.position = Vector3.zero;
+        playerMovement.StopAllCoroutines();
+        Destroy(currentLevel);
+    }
+
+    private void SetPlayerToSpawnPoint()
+    {
+        Transform spawnPoint = FindSpawnPoint();
+
         if (spawnPoint == null)
         {
-            foreach (Transform t in currentLevel.GetComponentsInChildren<Transform>())
-            {
-                if (t.CompareTag("SpawnPoint"))
-                {
-                    spawnPoint = t;
-                    break;
-                }
-            }
+            Debug.Log("SpawnPoint not found in level");
+            return;
         }
 
-        if (spawnPoint != null) player.transform.position = spawnPoint.position;
+        player.transform.position = spawnPoint.position;
+    }
 
-        else Debug.Log("SpawnPoint not found in level");
-
+    private void SetupPlayerAndLevel()
+    {
         UpdateBoxesSpritesOnLoad();
         playerMovement.SetBoxesAndPoints(allBoxes, allPoints);
         playerMovement.EnableMovement();
-
         isLevelCompleted = false;
+    }
+
+    private Transform FindSpawnPoint()
+    {
+        Transform spawnPoint = currentLevel.transform.Find("SpawnPoint");
+        if (spawnPoint != null) return spawnPoint;
+
+        foreach (Transform t in currentLevel.GetComponentsInChildren<Transform>())
+        {
+            if (t.CompareTag("SpawnPoint")) return t;
+        }
+
+        return null;
+    }
+
+    public void InitTilemap()
+    {
+        GameObject level = GameObject.FindGameObjectWithTag("Level");
+
+        if (level != null)
+        {
+            TilemapMarker[] markers = level.GetComponentsInChildren<TilemapMarker>();
+
+            foreach (var marker in markers)
+            {
+                switch (marker.type)
+                {
+                    case TilemapMarker.TilemapType.Walkable:
+                        walkableTilemap = marker.GetComponent<Tilemap>();
+                        gridManager.SetWalkableTilemap(walkableTilemap);
+                        break;
+
+                    case TilemapMarker.TilemapType.Box:
+                        boxTileMap = marker.GetComponent<Tilemap>();
+                        break;
+
+                    case TilemapMarker.TilemapType.Point:
+                        pointTilemap = marker.GetComponent<Tilemap>();
+                        break;
+                }
+            }
+        }
     }
 
     private void SpawnBoxesAndPointsFromTilemap()
@@ -96,6 +163,7 @@ public class LevelManager : MonoBehaviour
             if (!boxTileMap.HasTile(pos)) continue;
             Vector3 worldPos = boxTileMap.GetCellCenterWorld(pos);
             Instantiate(boxPrefab, worldPos, Quaternion.identity, gameObjSpawner.transform);
+            totalBox = CountTiles(boxTileMap);
         }
 
         // Spawn point
@@ -132,28 +200,47 @@ public class LevelManager : MonoBehaviour
     {
         if (isLevelCompleted) return;
 
-        levelDisplayText.text = $"Level {currentLevelIndex}";
+        undoButton.gameObject.SetActive(playerMovement.HasMoved());
+
+        targetText.text = $"{GetBoxesOnPointCount()} / {totalBox}";
+        levelText.text = $"Level {currentLevelIndex}";
+        stepText.text = $"{playerMovement.stepCounter}";
 
         if (allBoxes == null || allBoxes.Count == 0) return;
 
-        foreach (var box in allBoxes)
-        {
-            if (!box.IsOnPoint())
-            {
-                return;
-            }
-        }
+        bool allOnPoint = allBoxes.All(box => box.IsOnPoint());
+        if (!allOnPoint) return;
 
         isLevelCompleted = true;
         playerMovement.DisableMovement();
-
         StartCoroutine(DelayBeforeLoadNextLevel());
+    }
+
+    private int CountTiles(Tilemap tilemap)
+    {
+        int count = 0;
+        foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin)
+        {
+            if (tilemap.HasTile(pos)) count++;
+        }
+        return count;
+    }
+
+    public int GetBoxesOnPointCount()
+    {
+        int count = 0;
+
+        if (allBoxes == null) return 0;
+
+        foreach (var box in allBoxes)
+        {
+            if (box.IsOnPoint()) count++;
+        }
+        return count;
     }
 
     private IEnumerator DelayBeforeLoadNextLevel()
     {
-        Debug.Log($"Level {currentLevelIndex} Completed");
-
         yield return new WaitForSeconds(1.5f);
 
         if (currentLevelIndex >= levelPrefabs.Length)
@@ -164,34 +251,5 @@ public class LevelManager : MonoBehaviour
 
         currentLevelIndex += 1;
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
-    }
-
-    public void InitWalkableTilemap()
-    {
-        GameObject level = GameObject.FindGameObjectWithTag("Level");
-
-        if (level != null)
-        {
-            TilemapMarker[] markers = level.GetComponentsInChildren<TilemapMarker>();
-
-            foreach (var marker in markers)
-            {
-                if (marker.type == TilemapMarker.TilemapType.Walkable)
-                {
-                    walkableTilemap = marker.GetComponent<Tilemap>();
-                    gridManager.SetWalkableTilemap(walkableTilemap);
-                }
-
-                else if (marker.type == TilemapMarker.TilemapType.Box)
-                {
-                    boxTileMap = marker.GetComponent<Tilemap>();
-                }
-
-                else if (marker.type == TilemapMarker.TilemapType.Point)
-                {
-                    pointTilemap = marker.GetComponent<Tilemap>();
-                }
-            }
-        }
     }
 }
