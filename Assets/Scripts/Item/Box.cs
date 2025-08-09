@@ -40,6 +40,7 @@ public class Box : MonoBehaviour
     private IEnumerator MoveToCell(Vector3Int targetCell, Vector2Int dir, GridManager gridManager)
     {
         // isMoving = true;
+
         Vector3 startPos = transform.position;
         Vector3 endPos = gridManager.GetWorldCenter(targetCell);
 
@@ -83,5 +84,11 @@ public class Box : MonoBehaviour
     public bool IsOnPoint()
     {
         return isOnPoint;
+    }
+
+    public void SetOnPointState(bool onPoint)
+    {
+        isOnPoint = onPoint;
+        spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
     }
 }

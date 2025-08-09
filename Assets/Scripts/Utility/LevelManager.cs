@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Tilemaps;
 
 public class LevelManager : MonoBehaviour
 {
-    // [SerializeField] private GameObjSpawner gameObjSpawner;
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private GameObject gameObjSpawner;
@@ -14,11 +14,12 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject[] levelPrefabs;
     [SerializeField] private GridManager gridManager;
+    [SerializeField] private TextMeshProUGUI levelDisplayText;
     private GameObject currentLevel;
     private List<Transform> allPoints;
     private List<Box> allBoxes;
     private int currentLevelIndex;
-    public bool isLevelCompleted = false;
+    private bool isLevelCompleted = false;
     private Tilemap boxTileMap;
     private Tilemap pointTilemap;
     private Tilemap walkableTilemap;
@@ -30,6 +31,8 @@ public class LevelManager : MonoBehaviour
         DebugManager.instance.enableRuntimeUI = false;
         currentLevelIndex = 1;
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
+
+        levelDisplayText.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -53,6 +56,7 @@ public class LevelManager : MonoBehaviour
         InitWalkableTilemap();
 
         SpawnBoxesAndPointsFromTilemap();
+
         yield return null;
 
         Transform spawnPoint = currentLevel.transform.Find("SpawnPoint");
@@ -68,10 +72,7 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        if (spawnPoint != null)
-        {
-            player.transform.position = spawnPoint.position;
-        }
+        if (spawnPoint != null) player.transform.position = spawnPoint.position;
 
         else Debug.Log("SpawnPoint not found in level");
 
@@ -130,6 +131,8 @@ public class LevelManager : MonoBehaviour
     private void CheckLevelComplete()
     {
         if (isLevelCompleted) return;
+
+        levelDisplayText.text = $"Level {currentLevelIndex}";
 
         if (allBoxes == null || allBoxes.Count == 0) return;
 
