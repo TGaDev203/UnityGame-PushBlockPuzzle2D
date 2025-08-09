@@ -1,13 +1,20 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class Box : MonoBehaviour
 {
+    [Header("Sprites")]
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite onPointSprite;
+
+    [Header("Movement")]
     [SerializeField] private float moveSpeed;
+
+    [Header("State")]
     private bool isOnPoint = false;
+
+    [Header("Component")]
     private SpriteRenderer spriteRenderer;
 
     private void Awake()
@@ -31,13 +38,13 @@ public class Box : MonoBehaviour
             if (boxCell == targetCell) return false;
         }
 
-        StartCoroutine(MoveToCell(targetCell, dir, gridManager));
+        StartCoroutine(MoveBoxToCell(targetCell, dir, gridManager));
         SetSpriteBasedOnPoint(allPoints, gridManager, targetCell);
 
         return true;
     }
 
-    private IEnumerator MoveToCell(Vector3Int targetCell, Vector2Int dir, GridManager gridManager)
+    private IEnumerator MoveBoxToCell(Vector3Int targetCell, Vector2Int dir, GridManager gridManager)
     {
         // isMoving = true;
 
