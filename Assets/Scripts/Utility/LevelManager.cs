@@ -19,10 +19,10 @@ public class LevelManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private PlayerMovement playerMovement;
-    [SerializeField] private GridManager gridManager;
     [SerializeField] private TextMeshProUGUI targetText;
     [SerializeField] private TextMeshProUGUI stepText;
     [SerializeField] private TextMeshProUGUI levelText;
+    private GameStateManager gameStateManager;
 
     [Header("Tilemaps")]
     private Tilemap boxTileMap;
@@ -30,15 +30,22 @@ public class LevelManager : MonoBehaviour
     private Tilemap walkableTilemap;
 
     [Header("Level State")]
-    private GameObject currentLevel;
     private List<Transform> allPoints;
     private List<Box> allBoxes;
+    private GameObject currentLevel;
     private int currentLevelIndex;
     private bool isLevelCompleted = false;
     private int totalBox = 0;
 
+    private void Awake()
+    {
+        gameStateManager = GetComponent<GameStateManager>();
+    }
+
     private void Start()
     {
+        if (!gameStateManager.HasStarted()) return;
+
         InitTilemap();
 
         DebugManager.instance.enableRuntimeUI = false;
@@ -135,7 +142,7 @@ public class LevelManager : MonoBehaviour
                 {
                     case TilemapMarker.TilemapType.Walkable:
                         walkableTilemap = marker.GetComponent<Tilemap>();
-                        gridManager.SetWalkableTilemap(walkableTilemap);
+                        GridManager.Instance.SetWalkableTilemap(walkableTilemap);
                         break;
 
                     case TilemapMarker.TilemapType.Box:
@@ -192,7 +199,7 @@ public class LevelManager : MonoBehaviour
 
         foreach (var box in allBoxes)
         {
-            box.RefreshSpriteOnLoad(allPoints, gridManager);
+            box.RefreshSpriteOnLoad(allPoints);
         }
     }
 
@@ -213,6 +220,7 @@ public class LevelManager : MonoBehaviour
 
         isLevelCompleted = true;
         playerMovement.DisableMovement();
+        SoundManager.Instance.PlayLevelCompleteSound();
         StartCoroutine(DelayBeforeLoadNextLevel());
     }
 
