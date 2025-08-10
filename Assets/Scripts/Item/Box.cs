@@ -22,34 +22,33 @@ public class Box : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public bool TryPush(Vector2Int dir, GridManager gridManager, List<Box> allBoxes, List<Transform> allPoints)
+    public bool TryPush(Vector2Int dir, List<Box> allBoxes, List<Transform> allPoints)
     {
-        Vector3Int currentCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
+        Vector3Int currentCell = GridManager.Instance.GetCellInDirection(transform.position, Vector2Int.zero);
         Vector3Int targetCell = currentCell + new Vector3Int(dir.x, dir.y, 0);
 
-        if (gridManager.IsBlocked(targetCell)) return false;
+        if (GridManager.Instance.IsBlocked(targetCell)) return false;
 
         foreach (var box in allBoxes)
         {
             if (box == this) continue;
 
-            Vector3Int boxCell = gridManager.GetCellInDirection(box.transform.position, Vector2Int.zero);
+            Vector3Int boxCell = GridManager.Instance.GetCellInDirection(box.transform.position, Vector2Int.zero);
 
             if (boxCell == targetCell) return false;
         }
 
-        StartCoroutine(MoveBoxToCell(targetCell, dir, gridManager));
-        SetSpriteBasedOnPoint(allPoints, gridManager, targetCell);
+        bool wasOnPoint = isOnPoint;
+
+        StartCoroutine(MoveBoxToCell(targetCell, dir, allPoints, wasOnPoint));
 
         return true;
     }
 
-    private IEnumerator MoveBoxToCell(Vector3Int targetCell, Vector2Int dir, GridManager gridManager)
+    private IEnumerator MoveBoxToCell(Vector3Int targetCell, Vector2Int dir, List<Transform> allPoints, bool wasOnPoint)
     {
-        // isMoving = true;
-
         Vector3 startPos = transform.position;
-        Vector3 endPos = gridManager.GetWorldCenter(targetCell);
+        Vector3 endPos = GridManager.Instance.GetWorldCenter(targetCell);
 
         float t = 0f;
         while (t < 1f)
@@ -60,23 +59,26 @@ public class Box : MonoBehaviour
         }
 
         transform.position = endPos;
-        // isMoving = false;
+
+        SetSpriteBasedOnPoint(allPoints, targetCell);
+
+        if (!wasOnPoint && isOnPoint) SoundManager.Instance.PlayOnPointSound();
     }
 
-    public void RefreshSpriteOnLoad(List<Transform> allPoints, GridManager gridManager)
+    public void RefreshSpriteOnLoad(List<Transform> allPoints)
     {
-        Vector3Int myCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
+        Vector3Int myCell = GridManager.Instance.GetCellInDirection(transform.position, Vector2Int.zero);
 
-        SetSpriteBasedOnPoint(allPoints, gridManager, myCell);
+        SetSpriteBasedOnPoint(allPoints, myCell);
     }
 
-    private void SetSpriteBasedOnPoint(List<Transform> allPoints, GridManager gridManager, Vector3Int cellToCheck)
+    private void SetSpriteBasedOnPoint(List<Transform> allPoints, Vector3Int cellToCheck)
     {
         isOnPoint = false;
 
         foreach (var point in allPoints)
         {
-            Vector3Int pointCell = gridManager.GetCellInDirection(point.position, Vector2Int.zero);
+            Vector3Int pointCell = GridManager.Instance.GetCellInDirection(point.position, Vector2Int.zero);
 
             if (pointCell == cellToCheck)
             {

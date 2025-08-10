@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.InputSystem;
 
 public class GameState
 {
@@ -16,7 +14,6 @@ public class GameState
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GridManager gridManager;
     private PlayerAnimation playerAnim;
 
     [Header("Movement State")]
@@ -42,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     public void MoveRight() => Move(Vector2Int.right);
     public void EnableMovement() => canAcceptInput = true;
     public void DisableMovement() => canAcceptInput = false;
-    private bool CanMoveToCell(Vector3Int cell) => !gridManager.IsBlocked(cell);
+    private bool CanMoveToCell(Vector3Int cell) => !GridManager.Instance.IsBlocked(cell);
 
     private void Awake()
     {
@@ -66,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isMoving || !canAcceptInput) return;
 
-        Vector3Int currentCell = gridManager.GetCellInDirection(transform.position, Vector2Int.zero);
+        Vector3Int currentCell = GridManager.Instance.GetCellInDirection(transform.position, Vector2Int.zero);
         Vector3Int targetCell = currentCell + new Vector3Int(dir.x, dir.y, 0);
 
         if (!CanMoveToCell(targetCell)) return;
@@ -81,8 +78,9 @@ public class PlayerMovement : MonoBehaviour
     {
         isMoving = true;
 
+        SoundManager.Instance.PlayWalkSound();
         Vector3 startPos = transform.position;
-        Vector3 endPos = gridManager.GetWorldCenter(targetCell);
+        Vector3 endPos = GridManager.Instance.GetWorldCenter(targetCell);
 
         playerAnim.SetIsWalking(true);
         lastDirection = dir;
@@ -109,16 +107,16 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3Int afterBoxCell = cell + new Vector3Int(dir.x, dir.y, 0);
 
-        if (gridManager.IsBlocked(afterBoxCell) || BoxAtCell(afterBoxCell)) return false;
+        if (GridManager.Instance.IsBlocked(afterBoxCell) || BoxAtCell(afterBoxCell)) return false;
 
-        return boxToPush.TryPush(dir, gridManager, allBoxes, allPoints);
+        return boxToPush.TryPush(dir, allBoxes, allPoints);
     }
 
     private Box GetBoxAtCell(Vector3Int cell)
     {
         foreach (var box in allBoxes)
         {
-            Vector3Int boxCell = gridManager.GetCellInDirection(box.transform.position, Vector2Int.zero);
+            Vector3Int boxCell = GridManager.Instance.GetCellInDirection(box.transform.position, Vector2Int.zero);
 
             if (boxCell == cell) return box;
         }
@@ -162,6 +160,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        SoundManager.Instance.PlayUndoButtonSound();
         if (history.Count == 0) playerAnim.SetDirection(Vector2Int.down);
     }
 
@@ -175,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
     {
         foreach (var box in allBoxes)
         {
-            Vector3Int boxCell = gridManager.GetCellInDirection(box.transform.position, Vector2Int.zero);
+            Vector3Int boxCell = GridManager.Instance.GetCellInDirection(box.transform.position, Vector2Int.zero);
 
             if (boxCell == cell) return true;
         }
