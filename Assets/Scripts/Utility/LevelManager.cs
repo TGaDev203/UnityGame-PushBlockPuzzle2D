@@ -8,12 +8,14 @@ using System.Linq;
 
 public class LevelManager : MonoBehaviour
 {
-    [Header("Prefabs")]
+    [Header("Game Objects")]
     [SerializeField] private GameObject[] levelPrefabs;
     [SerializeField] private GameObject boxPrefab;
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private GameObject gameObjSpawner;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject bgmButton;
+    [SerializeField] private GameObject sfxButton;
     [SerializeField] private GameObject undoButton;
     [SerializeField] private GameObject moveButton;
 
@@ -45,17 +47,6 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         if (!gameStateManager.HasStarted()) return;
-
-        InitTilemap();
-
-        DebugManager.instance.enableRuntimeUI = false;
-        currentLevelIndex = 1;
-        StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
-
-        moveButton.gameObject.SetActive(true);
-        targetText.gameObject.SetActive(true);
-        stepText.gameObject.SetActive(true);
-        levelText.gameObject.SetActive(true);
     }
 
     private void Update()
@@ -63,9 +54,28 @@ public class LevelManager : MonoBehaviour
         CheckLevelComplete();
     }
 
+    public void InitGame()
+    {
+        InitTilemap();
+
+        DebugManager.instance.enableRuntimeUI = false;
+
+        if (gameStateManager.GetCurrentMode() == GameStateManager.GameMode.Normal) currentLevelIndex = 1;
+
+        else currentLevelIndex = 21;
+
+        StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
+
+        moveButton.SetActive(true);
+        bgmButton.SetActive(true);
+        sfxButton.SetActive(true);
+        targetText.gameObject.SetActive(true);
+        stepText.gameObject.SetActive(true);
+        levelText.gameObject.SetActive(true);
+    }
+
     private IEnumerator LoadLevelWithDelay(int index)
     {
-        player.SetActive(false);
         UnloadCurrentLevel();
 
         currentLevel = Instantiate(levelPrefabs[index], Vector3.zero, Quaternion.identity, transform);
@@ -83,14 +93,21 @@ public class LevelManager : MonoBehaviour
         player.SetActive(true);
     }
 
-    private void UnloadCurrentLevel()
+    public void UnloadCurrentLevel()
     {
         if (currentLevel == null) return;
 
+        player.SetActive(false);
         playerMovement.ClearHistoryState();
         playerMovement.stepCounter = 0;
         player.transform.position = Vector3.zero;
         playerMovement.StopAllCoroutines();
+
+        foreach (Transform child in gameObjSpawner.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         Destroy(currentLevel);
     }
 
@@ -251,13 +268,27 @@ public class LevelManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
 
-        if (currentLevelIndex >= levelPrefabs.Length)
+        var mode = gameStateManager.GetCurrentMode();
+
+        if (mode == GameStateManager.GameMode.Normal)
         {
-            Debug.Log("Game Completed!");
-            yield break;
+            if (currentLevelIndex >= 20)
+            {
+                Debug.Log("End of Normal Mode");
+                yield break;
+            }
         }
 
-        currentLevelIndex += 1;
+        else if (mode == GameStateManager.GameMode.Hard)
+        {
+            if (currentLevelIndex >= 30)
+            {
+                Debug.Log("End of Hard Mode");
+                yield break;
+            }
+        }
+
+        currentLevelIndex++;
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
     }
 }
