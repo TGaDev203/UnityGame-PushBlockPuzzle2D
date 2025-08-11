@@ -8,6 +8,8 @@ public class PlayerAnimation : MonoBehaviour
     {
         playerAnimator = GetComponent<Animator>();
     }
+    
+    //* -------------------- METHODS --------------------
 
     public void SetIsWalking(bool value)
     {

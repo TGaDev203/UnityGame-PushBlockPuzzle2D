@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class AStarPathfinder : MonoBehaviour
 {
-    //* ========================================
-    //* Lots of comments mainly for learning purpose  
-    //* ========================================
-
     [SerializeField] GridManager gridManager;
 
     private void Awake()
@@ -14,7 +10,8 @@ public class AStarPathfinder : MonoBehaviour
         gridManager = GetComponent<GridManager>();
     }
 
-    // Node class cho thuật toán A*
+    //* -------------------- NODE CLASS --------------------
+
     private class Node
     {
         public Vector3Int position;
@@ -25,6 +22,8 @@ public class AStarPathfinder : MonoBehaviour
 
         public Node(Vector3Int pos) => position = pos;
     }
+
+    //* -------------------- PATHFINDING HELPERS --------------------
 
     // Caculate Manhattan distance between 2 cells
     private float GetDistance(Vector3Int a, Vector3Int b)
@@ -52,6 +51,8 @@ public class AStarPathfinder : MonoBehaviour
 
         return neighbors;
     }
+
+    //* -------------------- PATHFINDING ALGORITHM --------------------
 
     // Path Finder
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int goal)
@@ -114,6 +115,8 @@ public class AStarPathfinder : MonoBehaviour
         // Path not found
         return null;
     }
+
+    //* -------------------- PATH RECONSTRUCTION --------------------
 
     // Trace back the path from goal to start
     private List<Vector3Int> RetracePath(Node endNode)

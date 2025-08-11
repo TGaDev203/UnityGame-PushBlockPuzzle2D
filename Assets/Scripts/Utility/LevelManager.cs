@@ -14,8 +14,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject pointPrefab;
     [SerializeField] private GameObject gameObjSpawner;
     [SerializeField] private GameObject player;
-    [SerializeField] private GameObject bgmButton;
-    [SerializeField] private GameObject sfxButton;
     [SerializeField] private GameObject undoButton;
     [SerializeField] private GameObject moveButton;
 
@@ -39,6 +37,8 @@ public class LevelManager : MonoBehaviour
     private bool isLevelCompleted = false;
     private int totalBox = 0;
 
+    //* -------------------- UNITY LIFECYCLE --------------------
+
     private void Awake()
     {
         gameStateManager = GetComponent<GameStateManager>();
@@ -54,6 +54,8 @@ public class LevelManager : MonoBehaviour
         CheckLevelComplete();
     }
 
+    //* -------------------- GAME INITIALIZATION --------------------
+
     public void InitGame()
     {
         InitTilemap();
@@ -67,12 +69,12 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
 
         moveButton.SetActive(true);
-        bgmButton.SetActive(true);
-        sfxButton.SetActive(true);
         targetText.gameObject.SetActive(true);
         stepText.gameObject.SetActive(true);
         levelText.gameObject.SetActive(true);
     }
+
+    //* -------------------- LEVEL LOADING --------------------
 
     private IEnumerator LoadLevelWithDelay(int index)
     {
@@ -111,6 +113,8 @@ public class LevelManager : MonoBehaviour
         Destroy(currentLevel);
     }
 
+    //* -------------------- PLAYER & LEVEL SETUP --------------------
+
     private void SetPlayerToSpawnPoint()
     {
         Transform spawnPoint = FindSpawnPoint();
@@ -144,6 +148,8 @@ public class LevelManager : MonoBehaviour
 
         return null;
     }
+
+    //* -------------------- TILEMAP MANAGEMENT --------------------
 
     public void InitTilemap()
     {
@@ -220,6 +226,8 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    //* -------------------- LEVEL COMPLETION CHECK --------------------
+
     private void CheckLevelComplete()
     {
         if (isLevelCompleted) return;
@@ -227,7 +235,13 @@ public class LevelManager : MonoBehaviour
         undoButton.gameObject.SetActive(playerMovement.HasMoved());
 
         targetText.text = $"{GetBoxesOnPointCount()} / {totalBox}";
-        levelText.text = $"Level {currentLevelIndex}";
+
+        if (gameStateManager.GetCurrentMode() == GameStateManager.GameMode.Hard && currentLevelIndex >= 21)
+            levelText.text = $"Level {currentLevelIndex - 20}";
+
+        else
+            levelText.text = $"Level {currentLevelIndex}";
+
         stepText.text = $"{playerMovement.stepCounter}";
 
         if (allBoxes == null || allBoxes.Count == 0) return;
@@ -240,6 +254,8 @@ public class LevelManager : MonoBehaviour
         SoundManager.Instance.PlayLevelCompleteSound();
         StartCoroutine(DelayBeforeLoadNextLevel());
     }
+
+    //* -------------------- UTILITY METHODS --------------------
 
     private int CountTiles(Tilemap tilemap)
     {

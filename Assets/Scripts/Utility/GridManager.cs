@@ -5,6 +5,10 @@ public class GridManager : MonoBehaviour
 {
     public static GridManager Instance { get; private set; }
 
+    private Tilemap walkableTilemap;
+
+    //* -------------------- UNITY LIFECYCLE --------------------
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -16,7 +20,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    private Tilemap walkableTilemap;
+    //* -------------------- GRID QUERY METHODS --------------------
 
     public Vector3Int GetCellInDirection(Vector3 worldPos, Vector2Int direction)
     {
@@ -41,7 +45,7 @@ public class GridManager : MonoBehaviour
     {
         return walkableTilemap.GetCellCenterWorld(cell);
     }
-
+    //* -------------------- TILEMAP SETUP --------------------
     public void SetWalkableTilemap(Tilemap tilemap)
     {
         walkableTilemap = tilemap;

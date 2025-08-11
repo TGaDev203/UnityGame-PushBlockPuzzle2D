@@ -4,32 +4,44 @@ using UnityEngine.UI;
 public class GameStateManager : MonoBehaviour
 {
     public enum GameMode { Normal, Hard }
+    public enum GameState { MainMenu, Gameplay, Pause }
 
+    //* -------------------- FIELDS & PROPERTIES --------------------
+
+    [Header("UI Screens")]
     [SerializeField] private GameObject menuScreen;
+    [SerializeField] private GameObject hudUI;
+    [SerializeField] private GameObject blurPanel;
+
+    [Header("UI - Backgrounds")]
+    [SerializeField] private GameObject mainBackground;
+    [SerializeField] private GameObject gameplayBackground;
+
+    [Header("UI - Menu Buttons")]
     [SerializeField] private GameObject startGameButton;
     [SerializeField] private GameObject resumeGameButton;
     [SerializeField] private GameObject selectModeButton;
     [SerializeField] private GameObject backMainButton;
     [SerializeField] private GameObject pauseButton;
-    [SerializeField] private GameObject mainImage;
-    [SerializeField] private GameObject gameplayImage;
-    [SerializeField] private GameObject blurPanel;
-    [SerializeField] private GameObject hudUI;
-    private LevelManager levelManager;
-    private bool hasStarted;
-    private GameMode currentMode = GameMode.Normal;
 
+    [Header("UI - Audio Buttons")]
     [SerializeField] private Button bgmButton;
     [SerializeField] private Button sfxButton;
     [SerializeField] private Color unmuteColor = Color.green;
     [SerializeField] private Color muteColor = Color.red;
-    private bool isThemeMuted = false;
+
+    [Header("Managers & State")]
+    private LevelManager levelManager;
+    private GameMode currentMode = GameMode.Normal;
+    private bool hasStarted = false;
+
+    [Header("Audio State")]
+    private bool isBGMMuted = false;
     private bool isSFXMuted = false;
-    private float lastThemeVolume = 1f;
+    private float lastBGMVolume = 1f;
     private float lastSFXVolume = 1f;
 
-    public bool HasStarted() => hasStarted;
-    public GameMode GetCurrentMode() => currentMode;
+    //* -------------------- UNITY LIFECYCLE --------------------
 
     private void Awake()
     {
@@ -39,110 +51,131 @@ public class GameStateManager : MonoBehaviour
     private void Start()
     {
         SoundManager.Instance.PlayMainSound();
-        menuScreen.SetActive(true);
-        mainImage.SetActive(true);
-        hasStarted = false;
+        ChangeState(GameState.MainMenu);
     }
+
+    //* -------------------- UI STATE MANAGEMENT --------------------
+
+    private void ChangeState(GameState newState)
+    {
+        menuScreen.SetActive(false);
+        hudUI.SetActive(false);
+        blurPanel.SetActive(false);
+        pauseButton.SetActive(false);
+
+        switch (newState)
+        {
+            case GameState.MainMenu:
+                hasStarted = false;
+                menuScreen.SetActive(true);
+                startGameButton.SetActive(true);
+                resumeGameButton.SetActive(false);
+                selectModeButton.SetActive(true);
+                backMainButton.SetActive(false);
+                mainBackground.SetActive(true);
+                gameplayBackground.SetActive(false);
+                break;
+
+            case GameState.Gameplay:
+                hasStarted = true;
+                hudUI.SetActive(true);
+                pauseButton.SetActive(true);
+                gameplayBackground.SetActive(true);
+                break;
+
+            case GameState.Pause:
+                menuScreen.SetActive(true);
+                startGameButton.SetActive(false);
+                resumeGameButton.SetActive(true);
+                selectModeButton.SetActive(false);
+                backMainButton.SetActive(true);
+                blurPanel.SetActive(true);
+                break;
+        }
+    }
+
+    //* -------------------- BUTTON EVENTS --------------------
 
     public void OnClickStartGame()
     {
-        hasStarted = true;
+        PlayUISound(true);
         SoundManager.Instance.PlayGameplaySound();
-        SoundManager.Instance.PlayEnterButtonSound();
-        gameplayImage.SetActive(true);
         levelManager.InitGame();
-        menuScreen.SetActive(false);
-        pauseButton.SetActive(true);
-        hudUI.SetActive(true);
+        ChangeState(GameState.Gameplay);
     }
 
     public void OnClickSelectMode(int index)
     {
-        SoundManager.Instance.PlayEnterButtonSound();
+        PlayUISound(true);
         currentMode = (GameMode)index;
-
-        // switch (currentMode)
-        // {
-        //     case GameMode.Normal:
-        //         break;
-
-        //     case GameMode.Hard:
-        //         break;
-        // }
     }
 
     public void OnClickBackMain()
     {
+        PlayUISound(false);
         levelManager.UnloadCurrentLevel();
         SoundManager.Instance.PlayMainSound();
-        SoundManager.Instance.PlayExitButtonSound();
-        hasStarted = false;
-        startGameButton.SetActive(true);
-        resumeGameButton.SetActive(false);
-        selectModeButton.SetActive(true);
-        backMainButton.SetActive(false);
-        blurPanel.SetActive(false);
-        hudUI.SetActive(false);
-        gameplayImage.SetActive(false);
-        hasStarted = false;
+        ChangeState(GameState.MainMenu);
     }
 
     public void OnClickPause()
     {
-        SoundManager.Instance.PlayExitButtonSound();
-        menuScreen.SetActive(true);
-        startGameButton.SetActive(false);
-        resumeGameButton.SetActive(true);
-        selectModeButton.SetActive(false);
-        backMainButton.SetActive(true);
-        pauseButton.SetActive(false);
-        blurPanel.SetActive(true);
+        PlayUISound(false);
+        ChangeState(GameState.Pause);
     }
 
     public void OnClickResume()
     {
-        SoundManager.Instance.PlayEnterButtonSound();
-        menuScreen.SetActive(false);
-        pauseButton.SetActive(true);
+        PlayUISound(true);
+        ChangeState(GameState.Gameplay);
     }
 
     public void OnClickMuteBGM()
     {
-        if (!isThemeMuted)
-        {
-            lastThemeVolume = SoundManager.Instance.GetBGMVolume();
-            SoundManager.Instance.SetBGMVolume(0f);
-            isThemeMuted = true;
-            bgmButton.image.color = muteColor;
-        }
-        else
-        {
-            SoundManager.Instance.SetBGMVolume(lastThemeVolume);
-            isThemeMuted = false;
-            bgmButton.image.color = unmuteColor;
-        }
+        ToggleAudio(ref isBGMMuted, ref lastBGMVolume,
+            SoundManager.Instance.GetBGMVolume, SoundManager.Instance.SetBGMVolume, bgmButton);
     }
 
     public void OnClickMuteSFX()
     {
-        if (!isSFXMuted)
-        {
-            lastSFXVolume = SoundManager.Instance.GetSFXVolume();
-            SoundManager.Instance.SetSFXVolume(0f);
-            isSFXMuted = true;
-            sfxButton.image.color = muteColor;
-        }
-        else
-        {
-            SoundManager.Instance.SetSFXVolume(lastSFXVolume);
-            isSFXMuted = false;
-            sfxButton.image.color = unmuteColor;
-        }
+        ToggleAudio(ref isSFXMuted, ref lastSFXVolume,
+            SoundManager.Instance.GetSFXVolume, SoundManager.Instance.SetSFXVolume, sfxButton);
     }
 
     public void OnClickQuit()
     {
-        SoundManager.Instance.PlayExitButtonSound();
+        PlayUISound(false);
         Application.Quit();
     }
+
+    //* -------------------- HELPERS --------------------
+
+    private void PlayUISound(bool isEnter)
+    {
+        if (isEnter)
+            SoundManager.Instance.PlayEnterButtonSound();
+        else
+            SoundManager.Instance.PlayExitButtonSound();
+    }
+
+    private void ToggleAudio(ref bool isMuted, ref float lastVolume,
+        System.Func<float> getVolume, System.Action<float> setVolume, Button button)
+    {
+        if (!isMuted)
+        {
+            lastVolume = getVolume();
+            setVolume(0f);
+            isMuted = true;
+            button.image.color = muteColor;
+        }
+        else
+        {
+            setVolume(lastVolume);
+            isMuted = false;
+            button.image.color = unmuteColor;
+        }
+    }
+
+    public bool HasStarted() => hasStarted;
+    public GameMode GetCurrentMode() => currentMode;
 }
