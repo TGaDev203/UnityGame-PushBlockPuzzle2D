@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Box : MonoBehaviour
 {
+    //* -------------------- FIELDS & PROPERTIES --------------------
+
     [Header("Sprites")]
     [SerializeField] private Sprite normalSprite;
     [SerializeField] private Sprite onPointSprite;
@@ -17,10 +19,14 @@ public class Box : MonoBehaviour
     [Header("Component")]
     private SpriteRenderer spriteRenderer;
 
+    //* -------------------- UNITY LIFECYCLE --------------------
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+    //* -------------------- BOX MOVEMENT --------------------
 
     public bool TryPush(Vector2Int dir, List<Box> allBoxes, List<Transform> allPoints)
     {
@@ -64,6 +70,8 @@ public class Box : MonoBehaviour
 
         if (!wasOnPoint && isOnPoint) SoundManager.Instance.PlayOnPointSound();
     }
+
+    //* -------------------- SPRITE & STATE --------------------
 
     public void RefreshSpriteOnLoad(List<Transform> allPoints)
     {

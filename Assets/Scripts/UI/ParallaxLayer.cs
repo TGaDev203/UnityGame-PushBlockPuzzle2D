@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ParallaxLayer : MonoBehaviour
 {
+    //* -------------------- FIELDS & PROPERTIES --------------------
+
     [Header("Parallax Settings")]
     [SerializeField] private float movementStrength;
     [SerializeField] private bool moveHorizontal = true;
@@ -13,6 +15,8 @@ public class ParallaxLayer : MonoBehaviour
 
     [Header("Internal State")]
     private Vector3 startPosition;
+
+    //* -------------------- UNITY LIFECYCLE --------------------
 
     void Start()
     {

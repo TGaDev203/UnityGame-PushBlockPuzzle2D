@@ -13,6 +13,8 @@ public class GameState
 
 public class PlayerMovement : MonoBehaviour
 {
+    //* -------------------- FIELDS & PROPERTIES --------------------
+
     [Header("References")]
     private PlayerAnimation playerAnim;
 
@@ -33,13 +35,29 @@ public class PlayerMovement : MonoBehaviour
     [Header("Step Counter")]
     public int stepCounter = 0;
 
+    //* -------------------- INPUT HANDLING & SETUP --------------------
+
     public void MoveUp() => Move(Vector2Int.up);
     public void MoveDown() => Move(Vector2Int.down);
     public void MoveLeft() => Move(Vector2Int.left);
     public void MoveRight() => Move(Vector2Int.right);
+
     public void EnableMovement() => canAcceptInput = true;
     public void DisableMovement() => canAcceptInput = false;
-    private bool CanMoveToCell(Vector3Int cell) => !GridManager.Instance.IsBlocked(cell);
+
+    public bool HasMoved()
+    {
+        hasMoved = history.Count > 0;
+        return hasMoved;
+    }
+
+    public void SetBoxesAndPoints(List<Box> boxes, List<Transform> points)
+    {
+        allBoxes = boxes;
+        allPoints = points;
+    }
+
+    //* -------------------- UNITY LIFECYCLE --------------------
 
     private void Awake()
     {
@@ -59,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    //* -------------------- MOVEMENT --------------------
+
     private void Move(Vector2Int dir)
     {
         if (isMoving || !canAcceptInput) return;
@@ -67,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3Int targetCell = currentCell + new Vector3Int(dir.x, dir.y, 0);
 
         if (!CanMoveToCell(targetCell)) return;
+
         SaveState();
 
         if (TryPushBoxAtCell(targetCell, dir)) StartCoroutine(MovePlayerToCell(targetCell, dir));
@@ -100,6 +121,10 @@ public class PlayerMovement : MonoBehaviour
         isMoving = false;
     }
 
+    private bool CanMoveToCell(Vector3Int cell) => !GridManager.Instance.IsBlocked(cell);
+
+    //* -------------------- BOX INTERACTION --------------------
+
     private bool TryPushBoxAtCell(Vector3Int cell, Vector2Int dir)
     {
         Box boxToPush = GetBoxAtCell(cell);
@@ -122,6 +147,19 @@ public class PlayerMovement : MonoBehaviour
         }
         return null;
     }
+
+    private bool BoxAtCell(Vector3Int cell)
+    {
+        foreach (var box in allBoxes)
+        {
+            Vector3Int boxCell = GridManager.Instance.GetCellInDirection(box.transform.position, Vector2Int.zero);
+
+            if (boxCell == cell) return true;
+        }
+        return false;
+    }
+
+    //* -------------------- UNDO & STATE MANAGEMENT --------------------
 
     private void SaveState()
     {
@@ -156,40 +194,19 @@ public class PlayerMovement : MonoBehaviour
             {
                 box.transform.position = pos;
 
-                if (prevState.boxOnpointStates.TryGetValue(box, out bool wasOnPoint)) box.SetOnPointState(wasOnPoint);
+                if (prevState.boxOnpointStates.TryGetValue(box, out bool wasOnPoint))
+                    box.SetOnPointState(wasOnPoint);
             }
         }
 
         SoundManager.Instance.PlayUndoButtonSound();
-        if (history.Count == 0) playerAnim.SetDirection(Vector2Int.down);
+        if (history.Count == 0)
+            playerAnim.SetDirection(Vector2Int.down);
     }
 
     public void ClearHistoryState()
     {
         history.Clear();
         playerAnim.SetDirection(Vector2Int.down);
-    }
-
-    private bool BoxAtCell(Vector3Int cell)
-    {
-        foreach (var box in allBoxes)
-        {
-            Vector3Int boxCell = GridManager.Instance.GetCellInDirection(box.transform.position, Vector2Int.zero);
-
-            if (boxCell == cell) return true;
-        }
-        return false;
-    }
-
-    public void SetBoxesAndPoints(List<Box> boxes, List<Transform> points)
-    {
-        allBoxes = boxes;
-        allPoints = points;
-    }
-
-    public bool HasMoved()
-    {
-        hasMoved = history.Count > 0;
-        return hasMoved;
     }
 }

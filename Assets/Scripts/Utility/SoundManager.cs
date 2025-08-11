@@ -1,9 +1,10 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
+
+    //* -------------------- FIELDS & PROPERTIES --------------------
 
     [Header("Audio Sources")]
     [SerializeField] private AudioSource backgroundAudioSource;
@@ -19,6 +20,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip enterButtonSound;
     [SerializeField] private AudioClip exitButtonSound;
 
+    //* -------------------- PLAY METHODS --------------------
+
     public void PlayMainSound() => PlayBGMSound(mainSound);
     public void PlayGameplaySound() => PlayBGMSound(gameplaySound);
     public void PlayWalkSound() => PlaySFXSound(walkSound);
@@ -27,6 +30,8 @@ public class SoundManager : MonoBehaviour
     public void PlayUndoButtonSound() => PlaySFXSound(undoButtonSound);
     public void PlayEnterButtonSound() => PlaySFXSound(enterButtonSound);
     public void PlayExitButtonSound() => PlaySFXSound(exitButtonSound);
+
+    //* -------------------- UNITY LIFECYCLE --------------------
 
     private void Awake()
     {
@@ -38,6 +43,8 @@ public class SoundManager : MonoBehaviour
             return;
         }
     }
+
+    //* -------------------- PLAY HELPERS --------------------
 
     private void PlaySFXSound(AudioClip clip)
     {
@@ -55,6 +62,8 @@ public class SoundManager : MonoBehaviour
         backgroundAudioSource.clip = clip;
         backgroundAudioSource.Play();
     }
+
+    //* -------------------- VOLUME CONTROL --------------------
 
     public float GetBGMVolume()
     {
