@@ -37,6 +37,8 @@ public class LevelManager : MonoBehaviour
     private bool isLevelCompleted = false;
     private int totalBox = 0;
 
+    public bool IsLevelCompleted() => isLevelCompleted;
+
     //* -------------------- UNITY LIFECYCLE --------------------
 
     private void Awake()
@@ -246,7 +248,7 @@ public class LevelManager : MonoBehaviour
 
         if (allBoxes == null || allBoxes.Count == 0) return;
 
-        bool allOnPoint = allBoxes.All(box => box.IsOnPoint());
+        bool allOnPoint = allBoxes.All(box => box.IsBoxOnPoint());
         if (!allOnPoint) return;
 
         isLevelCompleted = true;
@@ -275,7 +277,7 @@ public class LevelManager : MonoBehaviour
 
         foreach (var box in allBoxes)
         {
-            if (box.IsOnPoint()) count++;
+            if (box.IsBoxOnPoint()) count++;
         }
         return count;
     }
