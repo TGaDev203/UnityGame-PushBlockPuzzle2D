@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,6 +47,8 @@ public class GameStateManager : MonoBehaviour
     private void Awake()
     {
         levelManager = GetComponent<LevelManager>();
+        Application.targetFrameRate = 144;
+        QualitySettings.vSyncCount = 0;
     }
 
     private void Start()
@@ -92,6 +95,8 @@ public class GameStateManager : MonoBehaviour
                 blurPanel.SetActive(true);
                 break;
         }
+
+        UpdateButtonColor();
     }
 
     //* -------------------- BUTTON EVENTS --------------------
@@ -166,14 +171,20 @@ public class GameStateManager : MonoBehaviour
             lastVolume = getVolume();
             setVolume(0f);
             isMuted = true;
-            button.image.color = muteColor;
         }
         else
         {
             setVolume(lastVolume);
             isMuted = false;
-            button.image.color = unmuteColor;
         }
+
+        UpdateButtonColor();
+    }
+
+    private void UpdateButtonColor()
+    {
+        bgmButton.image.color = isBGMMuted ? muteColor : unmuteColor;
+        sfxButton.image.color = isSFXMuted ? muteColor : unmuteColor;
     }
 
     public bool HasStarted() => hasStarted;

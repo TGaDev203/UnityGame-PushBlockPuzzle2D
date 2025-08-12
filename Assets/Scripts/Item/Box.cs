@@ -14,7 +14,7 @@ public class Box : MonoBehaviour
     [SerializeField] private float moveSpeed;
 
     [Header("State")]
-    private bool isOnPoint = false;
+    private bool isBoxOnPoint = false;
 
     [Header("Component")]
     private SpriteRenderer spriteRenderer;
@@ -44,7 +44,7 @@ public class Box : MonoBehaviour
             if (boxCell == targetCell) return false;
         }
 
-        bool wasOnPoint = isOnPoint;
+        bool wasOnPoint = isBoxOnPoint;
 
         StartCoroutine(MoveBoxToCell(targetCell, dir, allPoints, wasOnPoint));
 
@@ -68,7 +68,7 @@ public class Box : MonoBehaviour
 
         SetSpriteBasedOnPoint(allPoints, targetCell);
 
-        if (!wasOnPoint && isOnPoint) SoundManager.Instance.PlayOnPointSound();
+        if (!wasOnPoint && isBoxOnPoint) SoundManager.Instance.PlayOnPointSound();
     }
 
     //* -------------------- SPRITE & STATE --------------------
@@ -82,7 +82,7 @@ public class Box : MonoBehaviour
 
     private void SetSpriteBasedOnPoint(List<Transform> allPoints, Vector3Int cellToCheck)
     {
-        isOnPoint = false;
+        isBoxOnPoint = false;
 
         foreach (var point in allPoints)
         {
@@ -90,22 +90,22 @@ public class Box : MonoBehaviour
 
             if (pointCell == cellToCheck)
             {
-                isOnPoint = true;
+                isBoxOnPoint = true;
                 break;
             }
         }
 
-        spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
+        spriteRenderer.sprite = isBoxOnPoint ? onPointSprite : normalSprite;
     }
 
-    public bool IsOnPoint()
+    public bool IsBoxOnPoint()
     {
-        return isOnPoint;
+        return isBoxOnPoint;
     }
 
     public void SetOnPointState(bool onPoint)
     {
-        isOnPoint = onPoint;
-        spriteRenderer.sprite = isOnPoint ? onPointSprite : normalSprite;
+        isBoxOnPoint = onPoint;
+        spriteRenderer.sprite = isBoxOnPoint ? onPointSprite : normalSprite;
     }
 }

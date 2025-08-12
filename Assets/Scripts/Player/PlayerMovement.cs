@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     //* -------------------- FIELDS & PROPERTIES --------------------
 
     [Header("References")]
+    [SerializeField] private LevelManager levelManager;
     private PlayerAnimation playerAnim;
 
     [Header("Movement State")]
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Step Counter")]
     public int stepCounter = 0;
 
-    //* -------------------- INPUT HANDLING & SETUP --------------------
+    //* -------------------- INPUT HANDLING & STATE --------------------
 
     public void MoveUp() => Move(Vector2Int.up);
     public void MoveDown() => Move(Vector2Int.down);
@@ -75,6 +76,8 @@ public class PlayerMovement : MonoBehaviour
         {
             allPoints.Add(p.transform);
         }
+
+        // EnableAllPointHighlights();
     }
 
     //* -------------------- MOVEMENT --------------------
@@ -92,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (TryPushBoxAtCell(targetCell, dir)) StartCoroutine(MovePlayerToCell(targetCell, dir));
 
-        else if (!BoxAtCell(targetCell)) StartCoroutine(MovePlayerToCell(targetCell, dir));
+        else if (!IsBoxAtCell(targetCell)) StartCoroutine(MovePlayerToCell(targetCell, dir));
     }
 
     private IEnumerator MovePlayerToCell(Vector3Int targetCell, Vector2Int dir)
@@ -118,7 +121,22 @@ public class PlayerMovement : MonoBehaviour
         transform.position = endPos;
         stepCounter++;
         playerAnim.SetIsWalking(false);
+        EnableAllPointHighlights();
         isMoving = false;
+    }
+
+    public void EnableAllPointHighlights()
+    {
+        GameObject[] cellHighlights = GameObject.FindGameObjectsWithTag("CellHighlight");
+        Vector3 playerPos = transform.position;
+
+        foreach (var cellHighlight in cellHighlights)
+        {
+            SpriteRenderer sp = cellHighlight.GetComponent<SpriteRenderer>();
+            bool isOnSameCell = Vector3.Distance(cellHighlight.transform.position, playerPos) < 0.1f;
+
+            sp.enabled = !isOnSameCell;
+        }
     }
 
     private bool CanMoveToCell(Vector3Int cell) => !GridManager.Instance.IsBlocked(cell);
@@ -127,17 +145,17 @@ public class PlayerMovement : MonoBehaviour
 
     private bool TryPushBoxAtCell(Vector3Int cell, Vector2Int dir)
     {
-        Box boxToPush = GetBoxAtCell(cell);
+        Box boxToPush = FindBoxAtCell(cell);
         if (boxToPush == null) return false;
 
         Vector3Int afterBoxCell = cell + new Vector3Int(dir.x, dir.y, 0);
 
-        if (GridManager.Instance.IsBlocked(afterBoxCell) || BoxAtCell(afterBoxCell)) return false;
+        if (GridManager.Instance.IsBlocked(afterBoxCell) || IsBoxAtCell(afterBoxCell)) return false;
 
         return boxToPush.TryPush(dir, allBoxes, allPoints);
     }
 
-    private Box GetBoxAtCell(Vector3Int cell)
+    private Box FindBoxAtCell(Vector3Int cell)
     {
         foreach (var box in allBoxes)
         {
@@ -148,7 +166,7 @@ public class PlayerMovement : MonoBehaviour
         return null;
     }
 
-    private bool BoxAtCell(Vector3Int cell)
+    private bool IsBoxAtCell(Vector3Int cell)
     {
         foreach (var box in allBoxes)
         {
@@ -173,7 +191,7 @@ public class PlayerMovement : MonoBehaviour
         foreach (var box in allBoxes)
         {
             state.boxPositions[box] = box.transform.position;
-            state.boxOnpointStates[box] = box.IsOnPoint();
+            state.boxOnpointStates[box] = box.IsBoxOnPoint();
         }
 
         history.Push(state);
@@ -181,6 +199,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void UndoMove()
     {
+        if (levelManager.IsLevelCompleted()) return;
+
         GameState prevState = history.Pop();
         transform.position = prevState.playerPosition;
         lastDirection = prevState.playerDirection;
