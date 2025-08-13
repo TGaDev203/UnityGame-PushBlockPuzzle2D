@@ -20,6 +20,16 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip enterButtonSound;
     [SerializeField] private AudioClip exitButtonSound;
 
+    [Header("Keys")]
+    private const string BGM_VOLUME_KEY = "BGMVolume";
+    private const string SFX_VOLUME_KEY = "SFXVolume";
+    private const string BGM_MUTED_KEY = "BGMMuted";
+    private const string SFX_MUTED_KEY = "SFXMuted";
+
+    [Header("Flags")]
+    private bool isBGMMuted = false;
+    private bool isSFXMuted = false;
+
     //* -------------------- PLAY METHODS --------------------
 
     public void PlayMainSound() => PlayBGMSound(mainSound);
@@ -35,7 +45,22 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+
+            bool bgmMuted = PlayerPrefs.GetInt(BGM_MUTED_KEY, 0) == 1;
+            bool sfxMuted = PlayerPrefs.GetInt(SFX_MUTED_KEY, 0) == 1;
+
+            isBGMMuted = bgmMuted;
+            isSFXMuted = sfxMuted;
+
+            float bgmVol = PlayerPrefs.GetFloat(BGM_VOLUME_KEY, 1f);
+            float sfxVol = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+
+            backgroundAudioSource.volume = bgmMuted ? 0f : bgmVol;
+            soundEffectAudioSource.volume = sfxMuted ? 0f : sfxVol;
+        }
 
         else
         {
@@ -63,29 +88,72 @@ public class SoundManager : MonoBehaviour
         backgroundAudioSource.Play();
     }
 
-    //* -------------------- VOLUME CONTROL --------------------
+    //* -------------------- MUTE TOGGLES --------------------
 
-    public float GetBGMVolume()
+    public void ToggleBGMMute()
     {
-        return backgroundAudioSource.volume;
+        bool currentlyMuted = backgroundAudioSource.volume <= 0f;
+
+        if (currentlyMuted)
+        {
+            backgroundAudioSource.volume = PlayerPrefs.GetFloat(BGM_VOLUME_KEY, 1f);
+            PlayerPrefs.SetInt(BGM_MUTED_KEY, 0);
+            isBGMMuted = false;
+        }
+
+        else
+        {
+            PlayerPrefs.SetFloat(BGM_VOLUME_KEY, backgroundAudioSource.volume);
+            backgroundAudioSource.volume = 0f;
+            PlayerPrefs.SetInt(BGM_MUTED_KEY, 1);
+            isBGMMuted = true;
+        }
+
+        PlayerPrefs.Save();
     }
+
+    public void ToggleSFXMute()
+    {
+        bool currentlyMuted = soundEffectAudioSource.volume <= 0f;
+
+        if (currentlyMuted)
+        {
+            soundEffectAudioSource.volume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+            PlayerPrefs.SetInt(SFX_MUTED_KEY, 0);
+            isSFXMuted = false;
+        }
+
+        else
+        {
+            PlayerPrefs.SetFloat(SFX_VOLUME_KEY, soundEffectAudioSource.volume);
+            soundEffectAudioSource.volume = 0f;
+            PlayerPrefs.SetInt(SFX_MUTED_KEY, 1);
+            isSFXMuted = true;
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    //* -------------------- VOLUME GETTERS/SETTERS --------------------
 
     public void SetBGMVolume(float value)
     {
         backgroundAudioSource.volume = value;
-        PlayerPrefs.SetFloat("ThemeSongVolume", value);
+        PlayerPrefs.SetFloat(BGM_VOLUME_KEY, value);
+        PlayerPrefs.SetInt(BGM_MUTED_KEY, value <= 0f ? 1 : 0);
         PlayerPrefs.Save();
-    }
-
-    public float GetSFXVolume()
-    {
-        return soundEffectAudioSource.volume;
     }
 
     public void SetSFXVolume(float value)
     {
         soundEffectAudioSource.volume = value;
-        PlayerPrefs.SetFloat("SoundEffectVolume", value);
+        PlayerPrefs.SetFloat(SFX_VOLUME_KEY, value);
+        PlayerPrefs.SetInt(SFX_MUTED_KEY, value <= 0 ? 1 : 0);
         PlayerPrefs.Save();
     }
+
+    public float GetBGMVolume() => backgroundAudioSource.volume;
+    public float GetSFXVolume() => soundEffectAudioSource.volume;
+    public bool IsBGMMuted() => isBGMMuted;
+    public bool IsSFXMuted() => isSFXMuted;
 }
