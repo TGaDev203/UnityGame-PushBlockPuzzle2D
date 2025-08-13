@@ -64,9 +64,15 @@ public class LevelManager : MonoBehaviour
 
         DebugManager.instance.enableRuntimeUI = false;
 
-        if (gameStateManager.GetCurrentMode() == GameStateManager.GameMode.Normal) currentLevelIndex = 1;
+        var mode = gameStateManager.GetCurrentMode();
 
-        else currentLevelIndex = 21;
+        var completedLevels = SaveManager.Instance.LoadCompletedLevels((SaveManager.GameMode)mode);
+
+        if (mode == GameStateManager.GameMode.Normal)
+            currentLevelIndex = completedLevels.Count > 0 ? completedLevels.Max() + 1 : 1;
+
+        else
+            currentLevelIndex = completedLevels.Count > 0 ? completedLevels.Max() + 1 : 21;
 
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
 
@@ -254,6 +260,9 @@ public class LevelManager : MonoBehaviour
         isLevelCompleted = true;
         playerMovement.DisableMovement();
         SoundManager.Instance.PlayLevelCompleteSound();
+
+        SaveManager.Instance.SaveLevelCompleted((SaveManager.GameMode)gameStateManager.GetCurrentMode(), currentLevelIndex);
+
         StartCoroutine(DelayBeforeLoadNextLevel());
     }
 
