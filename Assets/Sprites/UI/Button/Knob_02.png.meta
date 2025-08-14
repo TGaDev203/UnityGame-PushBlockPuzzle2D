@@ -1,10 +1,55 @@
 fileFormatVersion: 2
-guid: 0de489c0af8606245b07f96104ba47a5
+guid: 13db04c23bca10b48a79db1769dff99d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6831553095649369279
-    second: sample (13)_0
+      213: 6482939002345263778
+    second: hghghghg_0
+  - first:
+      213: -4093912049577122874
+    second: hghghghg_1
+  - first:
+      213: 369754486688023086
+    second: hghghghg_2
+  - first:
+      213: 2787881222046482370
+    second: hghghghg_3
+  - first:
+      213: -4168133543398559725
+    second: hghghghg_4
+  - first:
+      213: -8694392958797350372
+    second: hghghghg_5
+  - first:
+      213: 1237430761062813472
+    second: hghghghg_6
+  - first:
+      213: 479322063965371564
+    second: hghghghg_7
+  - first:
+      213: 206578749498916713
+    second: hghghghg_8
+  - first:
+      213: -4520895113262305986
+    second: hghghghg_9
+  - first:
+      213: 301092554120389237
+    second: hghghghg_10
+  - first:
+      213: 4426202430446121407
+    second: hghghghg_11
+  - first:
+      213: 4082930284800331423
+    second: hghghghg_12
+  - first:
+      213: 8504767569261844226
+    second: hghghghg_13
+  - first:
+      213: 1768404718527969804
+    second: hghghghg_14
+  - first:
+      213: 5858335124486449925
+    second: hghghghg_15
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +91,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -152,23 +197,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sample (13)_0
+      name: hghghghg_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 2
-        width: 36
-        height: 36
+        x: 132
+        y: 164
+        width: 477
+        height: 472
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 143699597a27131a0800000000000000
-      internalID: -6831553095649369279
+      spriteID: 2a2905faca608f950800000000000000
+      internalID: 6482939002345263778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hghghghg_15
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 10
+        width: 354
+        height: 356
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50b6536c1ccfc4150800000000000000
+      internalID: 5858335124486449925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: hghghghg_1
+      rect:
+        serializedVersion: 2
+        x: 701
+        y: 398
+        width: 438
+        height: 221
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2cca670772d59146abab2cd94ddeb7e
+      internalID: -297401869
       vertices: []
       indices: 
       edges: []
@@ -177,7 +266,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 847539428397b654ca3b1792b429a114
     internalID: 0
     vertices: []
     indices: 
@@ -186,7 +275,23 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      hghghghg_0: 6482939002345263778
+      hghghghg_1: -297401869
+      hghghghg_10: 386587226
+      hghghghg_11: -1875842332
+      hghghghg_12: 1945227975
+      hghghghg_13: 1751970349
+      hghghghg_14: -440663296
+      hghghghg_15: 5858335124486449925
+      hghghghg_2: 2048399107
+      hghghghg_3: -881148970
+      hghghghg_4: 619938864
+      hghghghg_5: -1760620399
+      hghghghg_6: 566988268
+      hghghghg_7: 485899663
+      hghghghg_8: 411179292
+      hghghghg_9: 1617809829
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

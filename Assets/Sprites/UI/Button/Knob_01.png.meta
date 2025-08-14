@@ -1,10 +1,52 @@
 fileFormatVersion: 2
-guid: c652090fa6e41fd45a11afe4e7001c6b
+guid: 9ad914c6a9e55e74495a0243f4f03262
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -9033319732227235370
-    second: "\u2771 blue pixel widget_0"
+      213: -5280896907626739553
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_0
+  - first:
+      213: 7508779617716164444
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_1
+  - first:
+      213: -5350468175635393146
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_2
+  - first:
+      213: 1952031164940199750
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_3
+  - first:
+      213: -6228601016464977971
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_4
+  - first:
+      213: 550940661050544880
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_5
+  - first:
+      213: 7836923014040222497
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_6
+  - first:
+      213: -5609376679600055363
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_7
+  - first:
+      213: -632436432675971120
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_8
+  - first:
+      213: -2141720403082967495
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_9
+  - first:
+      213: -1348929783660111723
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_10
+  - first:
+      213: 1897940783804247607
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_11
+  - first:
+      213: -5428427924046116341
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_12
+  - first:
+      213: 8159518535635669084
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_13
+  - first:
+      213: 5453101748647502062
+    second: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_14
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +88,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -152,23 +194,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u2771 blue pixel widget_0"
+      name: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 736
-        height: 552
+        x: 155
+        y: 16
+        width: 479
+        height: 474
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d1a11a609333a280800000000000000
-      internalID: -9033319732227235370
+      spriteID: f98037ded3c76b6b0800000000000000
+      internalID: -5280896907626739553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_14
+      rect:
+        serializedVersion: 2
+        x: 778
+        y: 4
+        width: 343
+        height: 155
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee0223c062f4dab40800000000000000
+      internalID: 5453101748647502062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_1
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 251
+        width: 430
+        height: 227
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff85eac0a7a88af419054429cf884e94
+      internalID: -696594968
       vertices: []
       indices: 
       edges: []
@@ -177,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: f8b87ed533d5eb943bcbe14bfb2fda3d
     internalID: 0
     vertices: []
     indices: 
@@ -187,7 +273,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "\u2771 blue pixel widget_0": -9033319732227235370
+      ChatGPT Image Aug 10, 2025, 11_48_26 PM-Photoroom-Photoroom_1: -696594968
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
