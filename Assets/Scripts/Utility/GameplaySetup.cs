@@ -6,7 +6,7 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 
-public class LevelManager : MonoBehaviour
+public class GameplaySetup : MonoBehaviour
 {
     [Header("Game Objects")]
     [SerializeField] private GameObject[] levelPrefabs;
@@ -58,21 +58,13 @@ public class LevelManager : MonoBehaviour
 
     //* -------------------- GAME INITIALIZATION --------------------
 
-    public void InitGame()
+    public void InitGame(int selectedLevel)
     {
         InitTilemap();
 
         DebugManager.instance.enableRuntimeUI = false;
 
-        var mode = gameStateManager.GetCurrentMode();
-
-        var completedLevels = SaveManager.Instance.LoadCompletedLevels((SaveManager.GameMode)mode);
-
-        if (mode == GameStateManager.GameMode.Normal)
-            currentLevelIndex = completedLevels.Count > 0 ? completedLevels.Max() + 1 : 1;
-
-        else
-            currentLevelIndex = completedLevels.Count > 0 ? completedLevels.Max() + 1 : 21;
+        currentLevelIndex = selectedLevel;
 
         StartCoroutine(LoadLevelWithDelay(currentLevelIndex));
 

@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: ac6f5c0bddbaaae409fa43b70ec59df1
+guid: e40bf74e138bc1240ace96ef5086a2bf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4875129963325915937
-    second: clipart2386288_0
+      213: -4526397323560199452
+    second: "\u2014Pngtree\u2014keyboard arrow_1698005_0"
+  - first:
+      213: -5192360534958271073
+    second: "\u2014Pngtree\u2014keyboard arrow_1698005_1"
+  - first:
+      213: 3729630524610782443
+    second: "\u2014Pngtree\u2014keyboard arrow_1698005_2"
+  - first:
+      213: 6734961860091232787
+    second: "\u2014Pngtree\u2014keyboard arrow_1698005_3"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -152,13 +161,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: clipart2386288_0
+      name: "\u2014Pngtree\u2014keyboard arrow_1698005_0"
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 977
-        height: 977
+        x: 463
+        y: 583
+        width: 276
+        height: 306
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +176,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 12387e14fd0f7a340800000000000000
-      internalID: 4875129963325915937
+      spriteID: 4ea5ae8bd910f21c0800000000000000
+      internalID: -4526397323560199452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014keyboard arrow_1698005_1"
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 240
+        width: 276
+        height: 305
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f951e009a9701f7b0800000000000000
+      internalID: -5192360534958271073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014keyboard arrow_1698005_2"
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 241
+        width: 273
+        height: 304
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be421e2a33f42c330800000000000000
+      internalID: 3729630524610782443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "\u2014Pngtree\u2014keyboard arrow_1698005_3"
+      rect:
+        serializedVersion: 2
+        x: 793
+        y: 246
+        width: 276
+        height: 299
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 312ca8ed024677d50800000000000000
+      internalID: 6734961860091232787
       vertices: []
       indices: 
       edges: []
@@ -186,7 +261,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "\u2014Pngtree\u2014keyboard arrow_1698005_0": -4526397323560199452
+      "\u2014Pngtree\u2014keyboard arrow_1698005_1": -5192360534958271073
+      "\u2014Pngtree\u2014keyboard arrow_1698005_2": 3729630524610782443
+      "\u2014Pngtree\u2014keyboard arrow_1698005_3": 6734961860091232787
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

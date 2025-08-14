@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     //* -------------------- FIELDS & PROPERTIES --------------------
 
     [Header("References")]
-    [SerializeField] private LevelManager levelManager;
+    [SerializeField] private GameplaySetup gameplaySetup;
     private PlayerAnimation playerAnim;
 
     [Header("Movement State")]
@@ -76,8 +76,6 @@ public class PlayerMovement : MonoBehaviour
         {
             allPoints.Add(p.transform);
         }
-
-        // EnableAllPointHighlights();
     }
 
     //* -------------------- MOVEMENT --------------------
@@ -199,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void UndoMove()
     {
-        if (levelManager.IsLevelCompleted()) return;
+        if (gameplaySetup.IsLevelCompleted()) return;
 
         GameState prevState = history.Pop();
         transform.position = prevState.playerPosition;
