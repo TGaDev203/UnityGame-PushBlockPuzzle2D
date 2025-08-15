@@ -190,6 +190,8 @@ public class GameStateManager : MonoBehaviour
 
         foreach (Transform child in levelContent) Destroy(child.gameObject);
 
+        int firstIncompleteIndex = 1;
+
         for (int i = 1; i <= totalLevels; i++)
         {
             GameObject lvlBtn = Instantiate(levelButtonPrefab, levelContent);
@@ -200,17 +202,20 @@ public class GameStateManager : MonoBehaviour
 
             int realIndex = (currentMode == GameMode.Hard) ? i + TOTAL_NORMAL_LEVEL : i;
 
-            Button btn = lvlBtn.GetComponent<Button>();
-            var image = lvlBtn.GetComponent<Image>();
-
             bool isUnlocked = (i == 1) || completedLevels.Contains(realIndex - 1);
             bool isCompleted = completedLevels.Contains(realIndex);
+
+            Button btn = lvlBtn.GetComponent<Button>();
+            var image = lvlBtn.GetComponent<Image>();
 
             if (isUnlocked)
             {
                 btn.interactable = true;
                 btn.onClick.AddListener(() => OnClickLoadLevel(realIndex));
+
                 if (image != null && isCompleted) image.sprite = completedLevelImage;
+
+                if (!isCompleted && firstIncompleteIndex == 1) firstIncompleteIndex = i;
             }
             else
             {
@@ -220,7 +225,14 @@ public class GameStateManager : MonoBehaviour
         }
 
         Canvas.ForceUpdateCanvases();
-        levelScrollRect.verticalNormalizedPosition = 1f;
+        if (levelScrollRect.vertical)
+        {
+            levelScrollRect.verticalNormalizedPosition = 1f - (float)(firstIncompleteIndex - 1) / (totalLevels - 1);
+        }
+        else
+        {
+            levelScrollRect.horizontalNormalizedPosition = (float)(firstIncompleteIndex - 1) / (totalLevels - 1);
+        }
     }
 
     private void PlayUISound(bool isEnter)
