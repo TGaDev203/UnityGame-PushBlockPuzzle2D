@@ -2,10 +2,7 @@
 
 ### 🎮 Gameplay Demo
 <p align="center">
-  <video width="840" autoplay loop muted>
-    <source src="Demo/Gif/Gameplay.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <img src="Demo/Gif/Gameplay.gif" width="840" alt="Gameplay Demo" />
 </p>
 
 > 🚧 **Work in progress** — This is a learning project aimed at improving my skills in game logic, puzzle system design, and Unity architecture.  
